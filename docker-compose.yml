@@ -22,8 +22,11 @@ services:
       - "5002:5002"
     environment:
       - AGENTE_APP_SERVICE=agente_app
+      - DATABASE_URL=postgresql+psycopg2://user:password@db:5432/postsdb
     depends_on:
       - agente_app
+      - db
+
     networks:
       - app-network
 
@@ -40,6 +43,21 @@ services:
       - backend
     networks:
       - app-network
+    
+  db:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: postsdb
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+volumes:
+  postgres_data:
 
 networks:
   app-network:
