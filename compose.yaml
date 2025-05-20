@@ -1,0 +1,24 @@
+services:
+  agente_app:
+    build: ./agente_app
+    container_name: agente_app
+    ports:
+      - "5001:5000"
+    environment:
+      - GOOGLE_API_KEY=AIzaSyCwPDup9ks1TONYiQM0RxdHrXH03FezJM0
+
+  backend:
+    build: ./backend
+    container_name: backend
+    ports:
+      - "5002:5002"
+    depends_on:
+      - agente_app
+
+  frontend:
+    build: ./frontend
+    container_name: frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gerador de Posts</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', sans-serif;
+      background-color: #f2f4f8;
+      color: #333;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 60px auto;
+      padding: 40px;
+      background-color: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 24px;
+      font-size: 2rem;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 16px;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      box-sizing: border-box;
+    }
+
+    button {
+      padding: 12px 20px;
+      font-size: 1rem;
+      font-weight: 600;
+      color: #fff;
+      background-color: #4f46e5;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      display: block;
+      margin: 0 auto;
+    }
+
+    button:hover {
+      background-color: #4338ca;
+    }
+
+    .section {
+      margin-top: 32px;
+      padding: 20px;
+      background: #f9f9f9;
+      border-left: 6px solid #4f46e5;
+      border-radius: 8px;
+    }
+
+    .section h2 {
+      margin-top: 0;
+      color: #4f46e5;
+    }
+
+    .section pre {
+      background: #f0f0f0;
+      padding: 16px;
+      border-radius: 8px;
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-size: 0.95rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Gerador de Posts com IA</h1>
+    <input type="text" id="topico" placeholder="Digite o tópico" />
+    <button onclick="gerarPost()">Gerar Post</button>
+
+    <div id="resultado"></div>
+  </div>
+
+  <script>
+    async function gerarPost() {
+      const topico = document.getElementById("topico").value;
+      const res = await fetch("/api/gerar-post", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ topico })
+      });
+
+      const data = await res.json();
+      renderFormatado(data);
+    }
+
+    function renderFormatado(data) {
+      const container = document.getElementById("resultado");
+      container.innerHTML = "";
+
+      for (const chave in data) {
+        const section = document.createElement("div");
+        section.className = "section";
+
+        const title = document.createElement("h2");
+        title.textContent = chave.charAt(0).toUpperCase() + chave.slice(1);
+        section.appendChild(title);
+
+        const pre = document.createElement("pre");
+        pre.textContent = data[chave];
+        section.appendChild(pre);
+
+        container.appendChild(section);
+      }
+    }
+  </script>
+</body>
+</html>
