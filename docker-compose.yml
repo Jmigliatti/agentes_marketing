@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  agente_app:
+    build:
+      context: ./agente_app
+      dockerfile: Dockerfile
+    container_name: agente_app
+    ports:
+      - "5001:5000"
+    environment:
+      - GOOGLE_API_KEY=AIzaSyCwPDup9ks1TONYiQM0RxdHrXH03FezJM0
+    networks:
+      - app-network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: backend
+    ports:
+      - "5002:5002"
+    environment:
+      - AGENTE_APP_SERVICE=agente_app
+    depends_on:
+      - agente_app
+    networks:
+      - app-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: frontend
+    ports:
+      - "80:80"
+    environment:
+      - BACKEND_SERVICE=backend
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
