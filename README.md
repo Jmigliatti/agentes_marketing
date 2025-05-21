@@ -13,7 +13,7 @@ Este projeto é uma aplicação web containerizada que permite gerar posts de ma
 
 1. Clone este repositório:
    ```bash
-   git clone [https://github.com/Jmigliatti/agentes_marketing.git](https://github.com/Jmigliatti/agentes_marketing.git)
+   git clone https://github.com/Jmigliatti/agentes_marketing.git
    cd agentes_marketing
    ```
 
