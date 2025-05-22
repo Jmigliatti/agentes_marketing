@@ -23,9 +23,7 @@ Este projeto é uma aplicação web containerizada que permite gerar posts de ma
    ```
 
 3. Acesse a aplicação em:
-   - Frontend: [http://localhost](http://localhost)
-   - Backend: [http://localhost:5002](http://localhost:5002)
-   - Agente: [http://localhost:5001](http://localhost:5001)
+   - [http://localhost](http://localhost)
 
 ---
 
