@@ -1,8 +1,8 @@
 from flask import Flask, request, jsonify
 import os
 from datetime import date
-import textwrap
 import warnings
+from google import genai
 
 # Configurações iniciais
 warnings.filterwarnings("ignore")
@@ -11,31 +11,9 @@ app = Flask(__name__)
 # Configura a API Key do Gemini (recomendo passar pelo docker compose)
 os.environ["GOOGLE_API_KEY"] = os.getenv("GOOGLE_API_KEY", "")
 
-# Imports da SDK do Gemini e ADK
-from google import genai
-from google.adk.agents import Agent
-from google.adk.runners import Runner
-from google.adk.sessions import InMemorySessionService
-from google.adk.tools import google_search
-from google.genai import types
 
 client = genai.Client()
 MODEL_ID = "gemini-2.0-flash"
-
-# Função auxiliar para executar o agente e coletar resposta final
-def call_agent(agent: Agent, message_text: str) -> str:
-    session_service = InMemorySessionService()
-    session = session_service.create_session(app_name=agent.name, user_id="user1", session_id="session1")
-    runner = Runner(agent=agent, app_name=agent.name, session_service=session_service)
-    content = types.Content(role="user", parts=[types.Part(text=message_text)])
-
-    final_response = ""
-    for event in runner.run(user_id="user1", session_id="session1", new_message=content):
-        if event.is_final_response():
-            for part in event.content.parts:
-                if part.text is not None:
-                    final_response += part.text + "\n"
-    return final_response.strip()
 
 # Funções dos 4 agentes
 def agente_buscador(topico, data_hoje):
