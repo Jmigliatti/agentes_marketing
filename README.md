@@ -43,12 +43,12 @@ O fluxo geral é:
 
 ## 📦 Containers do Docker Compose
 
-| Serviço      | Porta | Descrição                                                                 |
+| Serviço      | Descrição                                                                 |
 |--------------|-------|---------------------------------------------------------------------------|
-| `agente_app` | 5001  | Serviço de IA generativa com integração à API do Google (Gemini, Bard...) |
-| `backend`    | 5002  | API intermediária que orquestra requisições entre frontend, IA e banco    |
-| `frontend`   | 80    | Interface web para os usuários gerarem seus posts                         |
-| `db`         | -     | Banco de dados PostgreSQL para persistência dos posts                     |
+| `agente_app`  | Serviço de IA generativa com integração à API do Google (Gemini, Bard...) |
+| `backend`    | API intermediária que orquestra requisições entre frontend, IA e banco    |
+| `frontend`   | Interface web para os usuários gerarem seus posts                         |
+| `db`         | Banco de dados PostgreSQL para persistência dos posts                     |
 
 Todos os containers estão conectados à mesma rede Docker (`app-network`) e utilizam variáveis de ambiente para integração entre si.
 
