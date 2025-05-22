@@ -6,10 +6,8 @@ services:
       context: ./agente_app
       dockerfile: Dockerfile
     container_name: agente_app
-    ports:
-      - "5001:5000"
     environment:
-      - GOOGLE_API_KEY=AIzaSyCwPDup9ks1TONYiQM0RxdHrXH03FezJM0
+      - GOOGLE_API_KEY=AIzaSyD1UWd_lecPss9chJbBivtmet8D8vYtvsw
     networks:
       - app-network
 
@@ -18,8 +16,6 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     container_name: backend
-    ports:
-      - "5002:5002"
     environment:
       - AGENTE_APP_SERVICE=agente_app
       - DATABASE_URL=postgresql+psycopg2://user:password@db:5432/postsdb

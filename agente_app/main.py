@@ -19,6 +19,9 @@ from google.adk.sessions import InMemorySessionService
 from google.adk.tools import google_search
 from google.genai import types
 
+client = genai.Client()
+MODEL_ID = "gemini-2.0-flash"
+
 # Função auxiliar para executar o agente e coletar resposta final
 def call_agent(agent: Agent, message_text: str) -> str:
     session_service = InMemorySessionService()
@@ -36,54 +39,35 @@ def call_agent(agent: Agent, message_text: str) -> str:
 
 # Funções dos 4 agentes
 def agente_buscador(topico, data_hoje):
-    agente = Agent(
-        name="agente_buscador",
-        model="gemini-2.0-flash",
-        instruction="""
-        Você é um assistente de pesquisa. Sua tarefa é usar a ferramenta de busca do Google para recuperar os últimos lançamentos relevantes sobre o tópico abaixo. Foque em até 5 lançamentos recentes e relevantes.
-        """,
-        description="Busca notícias recentes",
-        tools=[google_search],
-    )
-    entrada = f"Tópico: {topico}\nData de hoje: {data_hoje}"
-    return call_agent(agente, entrada)
+    response = client.models.generate_content(
+    model=MODEL_ID,
+    contents=f"Você é um assistente de pesquisa. Sua tarefa é usar a ferramenta de busca do Google para recuperar os últimos lançamentos relevantes sobre o tópico abaixo. Foque em até 5 lançamentos recentes e relevantes.\nTópico: {topico}\nData de hoje: {data_hoje}",
+    config={"tools": [{"google_search": {}}]}
+)
+    return response.text.strip()
 
 def agente_planejador(topico, lancamentos):
-    agente = Agent(
-        name="agente_planejador",
-        model="gemini-2.0-flash",
-        instruction="""
-        Você é um planejador de conteúdo para redes sociais. Crie um plano de post para Instagram com base nos lançamentos buscados e escolha o mais relevante.
-        """,
-        description="Planeja conteúdo de post",
-        tools=[google_search],
-    )
-    entrada = f"Tópico: {topico}\nLançamentos: {lancamentos}"
-    return call_agent(agente, entrada)
+    response = client.models.generate_content(
+    model=MODEL_ID,
+    contents=f"Você é um planejador de conteúdo para redes sociais. Crie um plano de post para Instagram com base nos lançamentos buscados e escolha o mais relevante. Tópico: {topico}\nLançamentos: {lancamentos}",
+    config={"tools": [{"google_search": {}}]}
+)
+    return response.text.strip()
 
 def agente_redator(topico, plano):
-    agente = Agent(
-        name="agente_redator",
-        model="gemini-2.0-flash",
-        instruction="""
-        Você é um redator criativo. Com base no plano fornecido, escreva um post engajador para Instagram. Use linguagem simples e inclua 2 a 4 hashtags.
-        """,
-        description="Escreve rascunho do post"
-    )
-    entrada = f"Tópico: {topico}\nPlano: {plano}"
-    return call_agent(agente, entrada)
+    response = client.models.generate_content(
+    model=MODEL_ID,
+    contents=f"Você é um redator criativo. Com base no plano fornecido, escreva um post engajador para Instagram. Use linguagem simples e inclua 2 a 4 hashtags. Tópico: {topico}\nLançamentos: {plano}",
+)
+    return response.text.strip()
 
 def agente_revisor(topico, rascunho):
-    agente = Agent(
-        name="agente_revisor",
-        model="gemini-2.0-flash",
-        instruction="""
-        Você é um revisor especializado em posts para Instagram. Revise o texto, mantendo o tom jovem e claro.
-        """,
-        description="Revisa o post final"
-    )
-    entrada = f"Tópico: {topico}\nRascunho: {rascunho}"
-    return call_agent(agente, entrada)
+    response = client.models.generate_content(
+    model=MODEL_ID,
+    contents=f"Você é um revisor especializado em posts para Instagram. Revise o texto, mantendo o tom jovem e claro. Tópico: {topico}\nLançamentos: {rascunho}",
+)
+    return response.text.strip()
+
 
 # Rota principal da API
 @app.route("/gerar-post", methods=["POST"])
