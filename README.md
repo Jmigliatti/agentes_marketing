@@ -44,7 +44,7 @@ O fluxo geral é:
 ## 📦 Containers do Docker Compose
 
 | Serviço      | Descrição                                                                 |
-|--------------|-------|---------------------------------------------------------------------------|
+|--------------|---------------------------------------------------------------------------|
 | `agente_app`  | Serviço de IA generativa com integração à API do Google (Gemini, Bard...) |
 | `backend`    | API intermediária que orquestra requisições entre frontend, IA e banco    |
 | `frontend`   | Interface web para os usuários gerarem seus posts                         |
