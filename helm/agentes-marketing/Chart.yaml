@@ -1,0 +1,5 @@
+apiVersion: v2
+name: agentes-marketing
+description: Helm chart para implantar a aplicação Agentes de Marketing
+version: 0.1.0
+appVersion: "1.0"

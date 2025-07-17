@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: agente-app
+spec:
+  selector:
+    app: agente-app
+  ports:
+    - protocol: TCP
+      port: 80 # Pode manter 80 para comunicação interna
+      targetPort: 5000 # Deve ser a porta que o container escuta
+  type: ClusterIP

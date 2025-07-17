@@ -1,3 +1,4 @@
 flask
 google-generativeai
 google-adk
+psycopg2-binary

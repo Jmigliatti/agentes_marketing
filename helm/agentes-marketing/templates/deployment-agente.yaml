@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: agente-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: agente-app
+  template:
+    metadata:
+      labels:
+        app: agente-app
+    spec:
+      containers:
+      - name: agente-app
+        image: "{{ .Values.agenteApp.image.repository }}:{{ .Values.agenteApp.image.tag }}"
+        imagePullPolicy: {{ .Values.agenteApp.image.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.agenteApp.port }}
+        env:
+        - name: GOOGLE_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: google-api-secret
+              key: api-key

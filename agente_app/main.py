@@ -1,3 +1,21 @@
+
+from sqlalchemy import create_engine, Column, Integer, String, Text
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
+
+DATABASE_URL = "postgresql://user:password@db:5432/posts_db"
+Base = declarative_base()
+engine = create_engine(DATABASE_URL)
+SessionLocal = sessionmaker(bind=engine)
+
+class Post(Base):
+    __tablename__ = "posts"
+    id = Column(Integer, primary_key=True, index=True)
+    title = Column(String(255))
+    content = Column(Text)
+
+Base.metadata.create_all(bind=engine)
+
 from flask import Flask, request, jsonify
 import os
 from datetime import date
@@ -72,3 +90,18 @@ def gerar_post():
 # Executa a API
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
+
+
+# Supondo que no final do código existe algo como `post_title` e `post_content`
+# Adicione essas variáveis se elas não existirem para fins de exemplo:
+try:
+    post_title
+    post_content
+except NameError:
+    post_title = "Exemplo de título"
+    post_content = "Exemplo de conteúdo"
+
+session = SessionLocal()
+post = Post(title=post_title, content=post_content)
+session.add(post)
+session.commit()
