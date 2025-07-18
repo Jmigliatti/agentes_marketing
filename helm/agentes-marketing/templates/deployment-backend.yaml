@@ -12,17 +12,21 @@ spec:
       labels:
         app: backend
     spec:
+      initContainers:
+        - name: wait-for-db
+          image: busybox
+          command: ['sh', '-c', 'until nc -z db 5432; do echo "Esperando DB..."; sleep 2; done;']
       containers:
-      - name: backend
-        image: "{{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag }}"
-        imagePullPolicy: {{ .Values.backend.image.pullPolicy }}
-        ports:
-        - containerPort: {{ .Values.backend.port }}
-        env:
-        - name: AGENTE_APP_SERVICE
-          value: agente-app
-        - name: GOOGLE_API_KEY
-          valueFrom:
-            secretKeyRef:
-              name: google-api-secret
-              key: api-key 
+        - name: backend
+          image: "{{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag }}"
+          imagePullPolicy: {{ .Values.backend.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.backend.port }}
+          env:
+            - name: AGENTE_APP_SERVICE
+              value: agente-app
+            - name: GOOGLE_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: google-api-secret
+                  key: api-key

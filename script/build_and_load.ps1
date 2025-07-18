@@ -1,4 +1,3 @@
-# Funções de ajuda para um código mais limpo
 function Test-MinikubeRunning {
     $status = minikube status --format "{{.Host}}"
     return $status -eq "Running"
@@ -11,38 +10,45 @@ function Test-IngressAddonEnabled {
 }
 
 function Start-MinikubeTunnel {
-    # Abre o túnel em uma nova janela do PowerShell
     Start-Process powershell -ArgumentList "-NoExit", "-Command", "minikube tunnel"
     Write-Host "Minikube tunnel iniciado em nova janela. Deixe essa janela aberta para manter o túnel ativo."
 }
 
-# --- INÍCIO DO SCRIPT ---
-
-# 1. Verificar se o Minikube está no ar
+# Inicia o Minikube, caso não esteja em execução
 if (-not (Test-MinikubeRunning)) {
-    exit 1 # Encerra o script com um código de erro
+    Write-Host "Minikube não está em execução. Iniciando..."
+    minikube start
+    if (-not (Test-MinikubeRunning)) {
+        Write-Error "Erro ao iniciar o Minikube."
+        exit 1
+    }
+} else {
+    Write-Host "Minikube já está em execução."
 }
 
-# 2. Verificar se o Addon de Ingress está ativado
+# Habilita o addon de ingress se necessário
 if (-not (Test-IngressAddonEnabled)) {
+    Write-Host "Habilitando o addon de ingress..."
     minikube addons enable ingress
-    Start-Sleep -Seconds 15 # Pausa para dar tempo ao controlador de Ingress de iniciar
+    Start-Sleep -Seconds 15
 }
 
-# 3. Conectar o PowerShell ao ambiente Docker do Minikube
+# Configura o ambiente Docker local para usar o Docker interno do Minikube
 minikube docker-env --shell powershell | Invoke-Expression
 
-# 4. Construir as imagens Docker
+# Caminho base do projeto
 $basePath = Resolve-Path ".."
+
+# Build das imagens
 docker build -t backend:latest (Join-Path $basePath "backend")
 docker build -t frontend:latest (Join-Path $basePath "frontend")
 docker build -t agente-app:latest (Join-Path $basePath "agente_app")
 
-# 5. Instalar ou Atualizar a Aplicação com Helm
+# Deploy com Helm
 $chartPath = Join-Path $basePath "helm/agentes-marketing"
 $releaseName = "agentes-marketing"
 
 helm upgrade --install $releaseName $chartPath
 
-# 6. Iniciar o túnel Minikube
+# Inicia o túnel do Minikube em uma nova janela
 Start-MinikubeTunnel

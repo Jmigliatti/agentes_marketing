@@ -7,6 +7,6 @@ spec:
     app: db
   ports:
     - protocol: TCP
-      port: 5432 # Expor a porta 5432
-      targetPort: 5432 # Direcionar para a porta 5432 do container
+      port: 5432
+      targetPort: 5432
   type: ClusterIP
